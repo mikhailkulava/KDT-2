@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://www.bossmedia.com/wsdl/genericportaladapter">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gen:GetPlayerDetails>
+         <request>
+            <systemUID>$systemUID</systemUID>
+            <sessionID>$playerSessionUID</sessionID>
+         </request>
+      </gen:GetPlayerDetails>
+   </soapenv:Body>
+</soapenv:Envelope>

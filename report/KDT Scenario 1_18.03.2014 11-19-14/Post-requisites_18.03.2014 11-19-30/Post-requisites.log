@@ -1,0 +1,27 @@
+[2014-03-18 11:19:30] INFO Executing test case: "POST-REQUISITES"
+[2014-03-18 11:19:30] INFO 
+[2014-03-18 11:19:30] INFO EXECUTING KEYWORD: remoteDirRemove
+[2014-03-18 11:19:30] INFO Establishing connection with SFTP server
+[2014-03-18 11:19:30] INFO Host: 10.47.44.164
+[2014-03-18 11:19:30] INFO Port: 22
+[2014-03-18 11:19:30] INFO Login: jboss
+[2014-03-18 11:19:31] INFO Connected successfully!
+[2014-03-18 11:19:31] INFO Removing directory: "/boss/simulators1/"
+[2014-03-18 11:19:32] INFO Directory removed successfully
+[2014-03-18 11:19:32] INFO Closing connection!
+[2014-03-18 11:19:32] INFO 
+[2014-03-18 11:19:32] INFO EXECUTING KEYWORD: remoteDirRemove
+[2014-03-18 11:19:32] INFO Establishing connection with SFTP server
+[2014-03-18 11:19:32] INFO Host: 10.47.44.164
+[2014-03-18 11:19:32] INFO Port: 22
+[2014-03-18 11:19:32] INFO Login: jboss
+[2014-03-18 11:19:36] INFO Connected successfully!
+[2014-03-18 11:19:36] INFO Removing directory: "/boss/simulators2/"
+[2014-03-18 11:19:36] INFO Directory removed successfully
+[2014-03-18 11:19:36] INFO Closing connection!
+[2014-03-18 11:19:36] INFO 
+[2014-03-18 11:19:36] INFO EXECUTING KEYWORD: localDirRemove
+[2014-03-18 11:19:36] INFO Removing directory: C:\tmp\simulators1\AccountAccessorBingo_Properties1.txt
+[2014-03-18 11:19:36] INFO 
+[2014-03-18 11:19:36] INFO EXECUTING KEYWORD: localDirRemove
+[2014-03-18 11:19:36] INFO Removing directory: C:\tmp\simulators2\AccountAccessorBingo_Properties2.txt

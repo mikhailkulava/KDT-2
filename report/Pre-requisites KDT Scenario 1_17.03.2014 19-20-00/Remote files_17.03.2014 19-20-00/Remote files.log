@@ -1,0 +1,33 @@
+[2014-03-17 19:20:00] INFO Executing test case: "REMOTE FILES"
+[2014-03-17 19:20:00] INFO 
+[2014-03-17 19:20:00] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:20:00] INFO Establishing connection with SFTP server
+[2014-03-17 19:20:00] INFO Host: 10.47.44.164
+[2014-03-17 19:20:00] INFO Port: 22
+[2014-03-17 19:20:00] INFO Login: jboss
+[2014-03-17 19:20:01] INFO Connected successfully!
+[2014-03-17 19:20:01] INFO uploading file: resources\KDT Scenario 1\AccountAccessorBingo_Properties.txt to: /boss/simulators/
+[2014-03-17 19:20:02] INFO File was uploaded successfully!
+[2014-03-17 19:20:02] INFO Closing connection!
+[2014-03-17 19:20:02] INFO 
+[2014-03-17 19:20:02] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:20:02] INFO Establishing connection with SFTP server
+[2014-03-17 19:20:02] INFO Host: 10.47.44.164
+[2014-03-17 19:20:02] INFO Port: 22
+[2014-03-17 19:20:02] INFO Login: jboss
+[2014-03-17 19:20:03] INFO Connected successfully!
+[2014-03-17 19:20:03] INFO Directory: "simulators1" created
+[2014-03-17 19:20:03] INFO uploading file: resources\\KDT Scenario 1\\AccountAccessorBingo_Properties1.txt to: /boss/simulators1/
+[2014-03-17 19:20:04] INFO File was uploaded successfully!
+[2014-03-17 19:20:04] INFO Closing connection!
+[2014-03-17 19:20:04] INFO 
+[2014-03-17 19:20:04] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:20:04] INFO Establishing connection with SFTP server
+[2014-03-17 19:20:04] INFO Host: 10.47.44.164
+[2014-03-17 19:20:04] INFO Port: 22
+[2014-03-17 19:20:04] INFO Login: jboss
+[2014-03-17 19:20:05] INFO Connected successfully!
+[2014-03-17 19:20:05] INFO Directory: "simulators2" created
+[2014-03-17 19:20:05] INFO uploading file: resources\\KDT Scenario 1\\AccountAccessorBingo_Properties2.txt to: /boss/simulators2/
+[2014-03-17 19:20:06] INFO File was uploaded successfully!
+[2014-03-17 19:20:06] INFO Closing connection!

@@ -1,0 +1,32 @@
+Test Case;Keyword;Parameters;Value
+Test Case #1;simulator_config;fileName;AccountAccessorBingo_Properties.txt
+;;remotePath;/boss/simulators/
+;;localPath;C:\\tmp\\simulators\\
+;;propertyName;latency_fixed
+;;propertyValue;0
+;playerInfo_get;endpointURI;/1-GenericPortalAdapter/GenericPortalAdapter
+;;request;GetPlayerDetails
+;;systemUID;C_GS01
+;;playerSessionUID;TVM0MgAAB9EAAAFEyoFIRaTt6qg_
+Test Case #2;simulator_config;fileName;AccountAccessorBingo_Properties1.txt
+;;remotePath;/boss/simulators1/
+;;localPath;C:\\tmp\\simulators1\\
+;;propertyName;latency_fixed1
+;;propertyValue;10000
+;playerInfo_get;endpointURI;/1-GenericPortalAdapter/GenericPortalAdapter
+;;request;GetPlayerDetails
+;;systemUID;C_GS01
+;;playerSessionUID;TVM0MgAAB9IAAAFEyoH.cDwkJRY_
+Test Case #3;simulator_config;fileName;AccountAccessorBingo_Properties2.txt
+;;remotePath;/boss/simulators2/
+;;localPath;C:\\tmp\\simulators2\\
+;;propertyName;latency_fixed2
+;;propertyValue;5000
+;playerInfo_get;endpointURI;/1-GenericPortalAdapter/GenericPortalAdapter
+;;request;GetPlayerDetails
+;;systemUID;C_GS01
+;;playerSessionUID;TVM0MgAAB9MAAAFEyoKkLffVG8s_
+Post-requisites;remoteDirRemove;dirPath;/boss/simulators1/
+;remoteDirRemove;dirPath;/boss/simulators2/
+;localDirRemove;dirPath;C:\\tmp\\simulators1\\
+;localDirRemove;dirPath;C:\\tmp\\simulators2\\

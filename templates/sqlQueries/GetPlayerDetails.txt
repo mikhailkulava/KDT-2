@@ -1,0 +1,50 @@
+	SELECT 
+                 p.first_name 					"FirstName",  
+                 p.middle_name 					"MiddleName",  
+                 p.last_name 					"LastName", 
+                 p.birth_name 					"BirthName",
+                 p.mothers_name 				"MothersName",
+                 p.nick_name 					"NickName",
+                 p.username 					"Username",
+                 p.currency_id 					"Currency",
+                 p.preferred_language_id 		"PreferredLanguage",
+                 p.accepts_email 				"AcceptsEmail",
+                 p.birth_date 					"BirthDate",
+                 p.hear_about_us 				"HeardAboutUs",
+                 p.tax_category_id 				"TaxCategory",
+                 p.birth_place 					"BirthPlace",
+                 p.accepts_id_verification  	"AcceptsIdentityVerification",
+                 p.security_prompt 				"SecurityPrompt",
+                 p.gender_id 					"Gender",
+                 p.tracking_campaign_name 		"TrackingCampaign", 
+                 p.accepts_sms 					"AcceptsSMS",
+                 p.accepts_promotional_sms 		"AcceptsPromotionalSMS", 
+                 p.identification_number 		"IdentificationNumber", 
+                 p.id_verified_id 				"IdentificationVerified", 
+                 p.security_word 				"SecurityWord", 
+                 p.ident_manual_verified_until 	"IdentificationManualVerified",
+                 p.accepts_chat 				"AcceptsChat", 
+                 p.frequent_player_level_id 	"FrequentPlayerLevel", 
+                 p.preferred_comm_channel 		"PreferredCommunicationChannel", 
+                 p.is_reward_abuser 			"IsRewardAbuser", 
+                 p.newsletter_id 				"Newsletter", 
+                 p.accepts_rewards 				"AcceptsRewards", 
+                 ci.postal_code 				"PostalCode", 
+                 ci.country_id 					"Country", 
+                 ci.region 						"Region", 
+                 ci.email 						"Email",
+                 ci.address1 					"Address1", 
+                 ci.address2 					"Address2", 
+                 ci.address3 					"Address3", 
+                 ci.phone1 						"Phone1",
+                 ci.phone2 						"Phone2",
+                 ci.city 						"City", 
+                 ci.mobile_phone 				"MobilePhone", 
+                 ci.address_state_id 			"AddressVerified" 
+
+         FROM 
+                 player p 
+                 JOIN contact_info ci     		ON p.CONTACT_INFO_ID = ci.CONTACT_INFO_ID 
+                 JOIN player_session ps  	    ON p.PLAYER_ID = ps.PLAYER_ID 
+         WHERE 
+                 ps.external_client_session_id = '$playerSessionUID'

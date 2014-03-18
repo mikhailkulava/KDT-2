@@ -1,0 +1,39 @@
+[2014-03-17 19:10:01] INFO Test suite "Pre-requisites KDT Scenario 1" content: 
+[2014-03-17 19:10:01] INFO Remote files
+[2014-03-17 19:10:01] INFO      uploadFile
+[2014-03-17 19:10:01] INFO            To = /boss/simulators/
+[2014-03-17 19:10:01] INFO            From = resources\KDT Scenario 1\AccountAccessorBingo_Properties.txt
+[2014-03-17 19:10:01] INFO      uploadFile
+[2014-03-17 19:10:01] INFO            To = /boss/simulators1/
+[2014-03-17 19:10:01] INFO            From = resources\\KDT Scenario 1\\AccountAccessorBingo_Properties1.txt
+[2014-03-17 19:10:01] INFO      uploadFile
+[2014-03-17 19:10:01] INFO            To = /boss/simulators2/
+[2014-03-17 19:10:01] INFO            From = resources\\KDT Scenario 1\\AccountAccessorBingo_Properties2.txt
+[2014-03-17 19:10:01] INFO 
+[2014-03-17 19:10:01] INFO ------------------------------------------Remote files-----------------------------------------
+[2014-03-17 19:10:01] INFO 
+[2014-03-17 19:10:01] INFO Creating directory: report\Pre-requisites KDT Scenario 1_17.03.2014 19-10-01\Remote files_17.03.2014 19-10-01
+[2014-03-17 19:10:01] INFO Executing test case: "REMOTE FILES"
+[2014-03-17 19:10:01] INFO 
+[2014-03-17 19:10:01] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:10:01] INFO Establishing connection with SFTP server
+[2014-03-17 19:10:03] INFO Connected successfully!
+[2014-03-17 19:10:03] INFO uploading file: resources\KDT Scenario 1\AccountAccessorBingo_Properties.txt to: /boss/simulators/
+[2014-03-17 19:10:04] INFO File was uploaded successfully!
+[2014-03-17 19:10:04] INFO Closing connection!
+[2014-03-17 19:10:04] INFO 
+[2014-03-17 19:10:04] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:10:04] INFO Establishing connection with SFTP server
+[2014-03-17 19:10:05] INFO Connected successfully!
+[2014-03-17 19:10:05] INFO Directory: "simulators1" created
+[2014-03-17 19:10:05] INFO uploading file: resources\\KDT Scenario 1\\AccountAccessorBingo_Properties1.txt to: /boss/simulators1/
+[2014-03-17 19:10:06] INFO File was uploaded successfully!
+[2014-03-17 19:10:06] INFO Closing connection!
+[2014-03-17 19:10:06] INFO 
+[2014-03-17 19:10:06] INFO EXECUTING KEYWORD: uploadFile
+[2014-03-17 19:10:06] INFO Establishing connection with SFTP server
+[2014-03-17 19:10:07] INFO Connected successfully!
+[2014-03-17 19:10:07] INFO Directory: "simulators2" created
+[2014-03-17 19:10:07] INFO uploading file: resources\\KDT Scenario 1\\AccountAccessorBingo_Properties2.txt to: /boss/simulators2/
+[2014-03-17 19:10:07] INFO File was uploaded successfully!
+[2014-03-17 19:10:07] INFO Closing connection!

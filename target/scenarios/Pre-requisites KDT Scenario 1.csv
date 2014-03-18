@@ -1,0 +1,7 @@
+Test Case;Keyword;Parameters;Value
+Remote files;uploadFile;From;resources\KDT Scenario 1\AccountAccessorBingo_Properties.txt
+;;To;/boss/simulators/
+;uploadFile;From;resources\\KDT Scenario 1\\AccountAccessorBingo_Properties1.txt
+;;To;/boss/simulators1/
+;uploadFile;From;resources\\KDT Scenario 1\\AccountAccessorBingo_Properties2.txt
+;;To;/boss/simulators2/
