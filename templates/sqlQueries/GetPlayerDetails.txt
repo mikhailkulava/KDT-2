@@ -47,4 +47,4 @@
                  JOIN contact_info ci     		ON p.CONTACT_INFO_ID = ci.CONTACT_INFO_ID 
                  JOIN player_session ps  	    ON p.PLAYER_ID = ps.PLAYER_ID 
          WHERE 
-                 ps.external_client_session_id = '$playerSessionUID'
+                 p.player_id = '$playerID'

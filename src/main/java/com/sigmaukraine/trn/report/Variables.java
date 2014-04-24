@@ -1,19 +1,18 @@
 package com.sigmaukraine.trn.report;
 
+import com.sigmaukraine.trn.testUtils.Randomizer;
+import com.sigmaukraine.trn.testUtils.Utils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.sigmaukraine.trn.testUtils.Randomizer;
-import com.sigmaukraine.trn.testUtils.Utils;
-
 /**
- * Variables class is used to load various properties files, and is similar to {@link Config} class, 
+ * Variables class is used to load various properties files, and is similar to {@link Config} class,
  * but the Variables have a somewhat different macros.
  * 
  * Variables are stored, like the properties, in the <br/> 

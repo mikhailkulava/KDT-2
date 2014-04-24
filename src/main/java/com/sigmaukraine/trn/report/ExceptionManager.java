@@ -1,7 +1,5 @@
 package com.sigmaukraine.trn.report;
 
-
-
 public class ExceptionManager {
 
     private static ExceptionManager instance = new ExceptionManager();

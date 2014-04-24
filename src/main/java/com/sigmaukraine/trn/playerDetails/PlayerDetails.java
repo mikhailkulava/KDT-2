@@ -1,7 +1,7 @@
 package com.sigmaukraine.trn.playerDetails;
 
 /**
- * Created by mkulava on 14.02.14.
+ * This class stores player details
  */
 public class PlayerDetails {
     int FrequentPlayerLevel;
@@ -101,7 +101,6 @@ public class PlayerDetails {
         if (TrackingCampaign != null ? !TrackingCampaign.equals(that.TrackingCampaign) : that.TrackingCampaign != null)
             return false;
         if (Username != null ? !Username.equals(that.Username) : that.Username != null) return false;
-
         return true;
     }
 

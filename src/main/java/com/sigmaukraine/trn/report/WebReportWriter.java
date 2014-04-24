@@ -1,7 +1,18 @@
 package com.sigmaukraine.trn.report;
 
+import com.sigmaukraine.trn.testUtils.TestConfig;
+import com.sigmaukraine.trn.testUtils.Utils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+
 import java.io.*;
-import java.net.*;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
@@ -9,13 +20,6 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.*;
-
-import com.netcracker.automation.testcase.Config;
-import com.netcracker.automation.util.Utils;
 
 /**
  * Report is the singletone instance, so it's usage is pretty easy:
@@ -30,16 +34,16 @@ import com.netcracker.automation.util.Utils;
  */
 public class WebReportWriter implements ReportWriter {
     private static final Log log = LogFactory.getLog(WebReportWriter.class);
-    
+
     public static final String SUFFIX_KEY = "suffix";
-    public static final String REPORT_DIR_KEY = "report.dir";
-    public static final String REPORT_DIR_ROOT_KEY = "report.dir.root";
+    public static final String REPORT_DIR_KEY = "reportDir";
+    public static final String REPORT_DIR_ROOT_KEY = "reportRoot";
     public static final String REPORT_THREAD_LOCAL_KEY = "report.thread.local";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
     
     private static ReportThreadLocal report = new ReportThreadLocal();
-    
+
     private File reportDir;
     private File indexFile;
     private long indexFileLength;
@@ -47,7 +51,8 @@ public class WebReportWriter implements ReportWriter {
     private File reportFile;
     private long reportFileLength;
     private List<Logger> customLoggers;
-    
+
+
     private int logId = 0;
     private Stack<String> currentLogCallStack = new Stack<String>();
     private String currentLogName = null;
@@ -58,36 +63,36 @@ public class WebReportWriter implements ReportWriter {
     
     private boolean isInit = false;
     
-    private static String reportJarDir = "config/report/";
+    private static String reportJarDir = TestConfig.CONFIG_PROPERTIES.getProperty("reportJarDir");
 
-    private WebReportWriter(Properties p) {        
+    private WebReportWriter(Properties p) {
+
         String suffix = (p==null) ? "" : p.getProperty(SUFFIX_KEY, "");
         if (suffix.length() > 0)
-            suffix = "_"+suffix;       
+            suffix = "_" + suffix;
 
         String reportDirname = (p == null) 
-                ? Config.getString(REPORT_DIR_KEY) 
+                ? Config.getString(REPORT_DIR_KEY)
                 : p.getProperty(REPORT_DIR_KEY, Config.getString(REPORT_DIR_KEY));
         if (reportDirname.length()==0) {
-            reportDirname = "report"+suffix+"_"+new SimpleDateFormat("yyMMdd_HHmmss_SSS").format(new Date());
+            reportDirname = "report" + suffix + "_" + new SimpleDateFormat("yyMMdd_HHmmss_SSS").format(new Date());
         } else {
             reportDirname += suffix;
         }
         String threadName = Thread.currentThread().getName();
-        if (!"main".equals(threadName)&&ReportThreadLocal.isReportThreadLocal) {
-            reportDirname += "_"+threadName;
+        if (!"main".equals(threadName) && ReportThreadLocal.isReportThreadLocal) {
+            reportDirname += "_" + threadName;
         }
         String reportRootDir = (p == null) 
                 ? Config.getString(REPORT_DIR_ROOT_KEY) 
                 : p.getProperty(REPORT_DIR_ROOT_KEY, Config.getString(REPORT_DIR_ROOT_KEY));
         if (reportRootDir.length()==0) {
-            reportRootDir = "results";
+            reportRootDir = TestConfig.CONFIG_PROPERTIES.getProperty("results") + File.separator +
+                            Utils.getCurrentTimeDate(TestConfig.CONFIG_PROPERTIES.getProperty("reportDateTimeFormat"));
         }
-
-        
         reportDir = new File(reportRootDir, reportDirname);
         customLoggers = new ArrayList<Logger>();
-        customLoggers.add(Logger.getLogger("common"));        
+        customLoggers.add(Logger.getLogger("reportResultLogger"));
     }
     
     private void prepareReportTemplate() {
@@ -156,7 +161,7 @@ public class WebReportWriter implements ReportWriter {
     }
     
     /**
-          * Initialize Report with properties. In general you shouldn't call this method directly, Scenario does it for you.
+     * Initialize Report with properties. In general you shouldn't call this method directly, Scenario does it for you.
      * @param p - properties collection
      */
     public static void init(Properties p) {
@@ -194,7 +199,7 @@ public class WebReportWriter implements ReportWriter {
             isInit = true;
         }
         this.description = description;
-        String  filename = "report" + String.format("%04d", logId++) + ".xml";
+        String  filename = "report" + String.format("%04d", logId ++) + ".xml";
         currentLogName = logName;
         currentLogCallStack.clear();
         timeStack.clear();
@@ -225,18 +230,19 @@ public class WebReportWriter implements ReportWriter {
     private void appendTail() {
         if(reportFile==null) return;
         reportFileLength = reportFile.length();
-        for (int i=0,size=currentLogCallStack.size();i<size;i++) {
+        for (String ignored : currentLogCallStack) {
             appendReportFile(formatMessageClose());
         }
         appendReportFile(formatMessageTime(timeStack.lastElement(),System.currentTimeMillis())+"</LOG>");
         FileChannel indexFileChannel = null;
         try {
             indexFileChannel = new RandomAccessFile(indexFile, "rw").getChannel();
-            byte[] indexBytes = ("<div class=\""+Level.toLevel(maxPriorityReported).toString().toLowerCase()+"\">" +
-                    "<a href=\""+reportFile.getName()+"\" "+(description.length()==0?"":"TITLE=\"" + description.replaceAll("\"","'") + "\" ")+" onclick=\"highlight(this);\">"+currentLogName+"</a>" +
+            byte[] indexBytes = ("<div class=\"" + Level.toLevel(maxPriorityReported).toString().toLowerCase()+"\">" +
+                    "<a href=\"" + reportFile.getName() + "\" " + (description.length()==0?"":"TITLE=\"" + description.replaceAll("\"","'") + "\" ") +
+                    " onclick=\"highlight(this);\">" + currentLogName + "</a>" +
                     "</div>").getBytes();
             indexFileChannel.write(ByteBuffer.wrap(indexBytes),indexFileLength);
-            indexFileChannel.truncate(indexFileLength+indexBytes.length);
+            indexFileChannel.truncate(indexFileLength + indexBytes.length);
         } catch (IOException e) {
             log.error("Unable to write to index file", e);
         } finally {
@@ -248,13 +254,13 @@ public class WebReportWriter implements ReportWriter {
      * Opens the section inside a log. A section is the node in the tree, that has subnodes, snapshot and a message in the details. 
      * @param sectionName - Section name
      * @param message - a message in the details
-     * @param page - a page source
+     * @param page - a takeSnapshot source
      */
     public synchronized void openSection(String sectionName, String message, SourceProvider page) {
         currentLogCallStack.push(sectionName);
         appendReportFile(formatMessageOpen(sectionName, null, message, page),reportFileLength);
         for (Logger logger:customLoggers) {
-            logger.info(currentLogCallStack.toString() + "Section - " + sectionName);
+            logger.info(currentLogCallStack.toString());
         }
         timeStack.push(System.currentTimeMillis());
         appendTail();
@@ -276,8 +282,8 @@ public class WebReportWriter implements ReportWriter {
         maxPriorityReported = Math.max(maxPriorityReported, level.toInt());
         appendReportFile(formatMessageOpen(title, level, message, page)+formatMessageClose(),reportFileLength);
 
-        String msg = currentLogCallStack.toString() + 
-            " Title: "+(title==null?"":title) + ", Message: "+message==null?"":message;
+        String msg = currentLogCallStack.toString() +
+            " Title: " + (title == null ? "" : title ) + ", Message: "+message==null?"":message;
 
         for (Logger customerLogger:customLoggers) {
             customerLogger.log(level, msg);
@@ -286,7 +292,7 @@ public class WebReportWriter implements ReportWriter {
     }
     
     private File createSnapshot(SourceProvider page) {
-        String pageFilename = "page"+String.format("%04d", pageId++);
+        String pageFilename = "takeSnapshot"+String.format("%04d", pageId++);
         File pageFileHTML = new File(new File(reportDir, "pages"), pageFilename + "."+page.getExtension());
         Utils.writeStringToFile(pageFileHTML, page.getSource());
         return pageFileHTML;
@@ -342,12 +348,12 @@ public class WebReportWriter implements ReportWriter {
                 fileChannel.write(ByteBuffer.wrap(dataBytes),fileChannel.size());
             }
         } catch (IOException e) {
-            log.error("Unable to write to "+reportFile.getName(), e);
+            log.error("Unable to write to " + reportFile.getName(), e);
         } finally {
             try {
                 if(fileChannel!=null)fileChannel.close();
             } catch (IOException e) {
-                log.error("Unable to close "+reportFile.getName(), e);
+                log.error("Unable to close " + reportFile.getName(), e);
             }
         }
     }
@@ -355,7 +361,12 @@ public class WebReportWriter implements ReportWriter {
     public File getReportDir() {
         return reportDir;
     }
-    
+
+
+    public List<Logger> getCustomLoggers() {
+        return customLoggers;
+    }
+
     private static class ReportThreadLocal extends ThreadLocal<WebReportWriter> {
         private static boolean isReportThreadLocal = Boolean.parseBoolean(Config.getString(REPORT_THREAD_LOCAL_KEY));
         private WebReportWriter report;
@@ -367,7 +378,7 @@ public class WebReportWriter implements ReportWriter {
                 return report;
             }
         }
-        
+
         @Override
         public void set(WebReportWriter value) {
             if(isReportThreadLocal) {

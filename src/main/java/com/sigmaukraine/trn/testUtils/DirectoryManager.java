@@ -1,32 +1,42 @@
 package com.sigmaukraine.trn.testUtils;
 
-import java.io.*;
+import com.sigmaukraine.trn.report.Log;
+
+import java.io.File;
 
 /**
- * Created by mkulava on 11.02.14.
+ * This class provides simple directory actions, as deleting and creating directories.
  */
 public class DirectoryManager {
-
+    /**
+     * Create directory method.
+     * @param dirPath - path where directory has to be created (including directory to be created name)
+     * @return - returns created directory path
+     */
     public static String createDir(String dirPath){
         File file = new File(dirPath);
         if(!file.exists()){
            file.mkdirs();
-           LogManager.info("Creating directory: " + file);
+           Log.info("Creating directory", "creating directory: " + file);
         }
         else{
-           LogManager.info("Directory " + dirPath + " already exists");
+           Log.info("Directory " + dirPath + " already exists");
         }
         return dirPath;
     }
 
+    /**
+     * Delete directory method.
+     * @param dirToDelete - path of a directory to be deleted.
+     */
     public static void removeDir(File dirToDelete){
         if (!dirToDelete.exists()){
             return;
         }
         if (dirToDelete.isDirectory()) {
-            for (File f : dirToDelete.listFiles()) {
-                LogManager.info("Removing directory: " + f);
-                removeDir(f);
+            for (File file : dirToDelete.listFiles()) {
+                Log.info("Removing directory", "removing directory: " + file);
+                removeDir(file);
             }
         }
         dirToDelete.delete();

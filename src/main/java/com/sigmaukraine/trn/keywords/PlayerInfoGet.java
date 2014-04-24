@@ -1,14 +1,13 @@
 package com.sigmaukraine.trn.keywords;
 
-import com.sigmaukraine.trn.testUtils.TestConfig;
 import com.sigmaukraine.trn.playerDetails.PlayerDetails;
 import com.sigmaukraine.trn.playerDetails.PlayerDetailsConverter;
-import com.sigmaukraine.trn.testUtils.DbManager;
-import com.sigmaukraine.trn.testUtils.HttpManager;
-import com.sigmaukraine.trn.testUtils.LogManager;
+import com.sigmaukraine.trn.report.Log;
+import com.sigmaukraine.trn.testUtils.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,37 +15,54 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by mkulava on 07.03.14.
- */
+ * This keyword gets player's information (by @param - playerID) from database and SOAP response. Also provides XSD validation of the response.
+ **/
 public class PlayerInfoGet {
+    /**
+     * Keyword execution method
+     * @param parametersAndValues - stores parameters required for keyword execution
+     */
     public static void execute(Map<String, String> parametersAndValues){
         //actual result map
         Map<String, String > actualResultMap = new HashMap<String, String>();
 
         //getting expected result map
         DbManager dbManager = new DbManager();
-        String query = dbManager.createQueryFromTemplate(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsSql"), parametersAndValues);
+        String query = TemplateManger.replacePlaceholders(
+                                                          FileManager.getTxtFileContent(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsSql")),
+                                                          parametersAndValues);
         Map<String, String> expectedResultMap = dbManager.rows(query);
 
+        String currentPlayerSession = dbManager.rows(
+                                                        TemplateManger.replacePlaceholders(
+                                                                                            FileManager.getTxtFileContent(
+                                                                                            TestConfig.CONFIG_PROPERTIES.getProperty("getSessionByPlayerID")),
+                                                        parametersAndValues)).get ("EXTERNAL_CLIENT_SESSION_ID");
+
         //creating request from a template
-        String request = HttpManager.createRequestFromTemplate(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsSoap"), parametersAndValues);
+        parametersAndValues.put("playerSessionUID", currentPlayerSession);
+        String request = TemplateManger.replacePlaceholders(
+                                                            FileManager.getTxtFileContent(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsSoap")),
+                                                            parametersAndValues);
+        Log.info("Request ready: ", request);
         String response = HttpManager.sendSoapRequest(request,
                 parametersAndValues.get("endpointURI"));
+
         try {
-            //getting xPath template
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsXpath")));
+            //parsing response
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder =  builderFactory.newDocumentBuilder();
             Document xmlDocument = builder.parse(new ByteArrayInputStream(response.getBytes()));
             XPath xPath =  XPathFactory.newInstance().newXPath();
-            Node currentNode = null;
-            String xPathTemplate = bufferedReader.readLine();
-            bufferedReader.close();
+            Node currentNode;
+            String xPathTemplate = PropertyManager.getProperties(TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsXpath")).getProperty("getPlayerDetails");
 
             //getting actual result map
             for(Map.Entry<String, String> entry : expectedResultMap.entrySet()){
@@ -54,31 +70,39 @@ public class PlayerInfoGet {
                 if(replaceKey.equals("IdentificationManualVerified")){
                     replaceKey = "IdentificationManualVerifiedUntil";
                 }
-                String readyExpression = xPathTemplate.replace("$key", replaceKey);
+                //readyExpression = xPathTemplate.replace("$key", replaceKey);
+                String readyExpression = TemplateManger.replacePlaceholders(xPathTemplate, "key", replaceKey);
                 currentNode = (Node)xPath.compile(readyExpression).evaluate(xmlDocument, XPathConstants.NODE);
                 actualResultMap.put(entry.getKey(), currentNode.getTextContent());
             }
+
+            //xsd validation
+            Log.info("Validating response against XSD-schema");
+            Log.info("[VALIDATION] XML response valid: " + Boolean.toString(
+                    HttpManager.validateXMLSchema(
+                            TestConfig.CONFIG_PROPERTIES.getProperty("getPlayerDetailsXSD"), response)
+            ).toUpperCase());
         } catch (FileNotFoundException e) {
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("File not found!", e);
         } catch (SAXException e) {
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("SAXException occurred!", e);
         } catch (IOException e) {
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("IO exception occurred!", e);
         } catch (ParserConfigurationException e) {
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("ParserConfigurationException exception occurred!", e);
         } catch (XPathException e){
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("XPathException exception occurred!", e);
         }
 
         //comparing player details from db and soap response
         PlayerDetails sqlPlayerDetails = PlayerDetailsConverter.convert(expectedResultMap);
         PlayerDetails soapPlayerDetails = PlayerDetailsConverter.convert(actualResultMap);
-        LogManager.info("Comparing player details from DB and Soap response");
+        Log.info("Comparing player details from DB and SOAP response");
         if(sqlPlayerDetails.equals(soapPlayerDetails)){
-            LogManager.info("ASSERTION PASSED: Actual result == Expected result");
+            Log.info("ASSERTION PASSED: Actual result == Expected result");
         }
         else {
-            LogManager.info("ASSERTION FAILED: Actual result != Expected result");
+            Log.error("ASSERTION FAILED: Actual result != Expected result");
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.sigmaukraine.trn.testUtils;
 
+import com.sigmaukraine.trn.report.Log;
+
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +10,18 @@ import java.util.Map;
  * This class implements required db actions (establish connection, execute queries, save results to map)
  */
 public class DbManager {
-
+    /**
+     * This method establishes connection to database and returns connection.
+     * Private - as it is used in public methods as rows() and executeQuery()
+     */
     private Connection establishConnection(){
         try {
-            LogManager.info("Registering JDBC driver");
+            Log.info("Registering JDBC driver");
             Class.forName("oracle.jdbc.driver.OracleDriver");
         } catch (ClassNotFoundException e) {
-            LogManager.warning("Couldn't locate required JDBC driver!" + e.getLocalizedMessage());
+            Log.error("Couldn't locate required JDBC driver!", e);
         } finally {
-            LogManager.info("Driver registered successfully!");
+            Log.info("Driver registered successfully!");
         }
         Connection connection = null;
         try {
@@ -25,36 +30,31 @@ public class DbManager {
             String dbName = TestConfig.SERVER_PROPERTIES.getProperty("database");
             String dbUsername = TestConfig.SERVER_PROPERTIES.getProperty("databaseuser");
             String dbPassword = TestConfig.SERVER_PROPERTIES.getProperty("databasepassword");
-            LogManager.info("Establishing connection to database: \"" + dbName + "\"");
-            LogManager.info("Data base URL: " + dbURL);
-            LogManager.info("Port: " + dbPort);
-            LogManager.info("Login: " + dbUsername);
+            Log.info("Establishing connection to database: \"" + dbName + "\"",
+                     "\nData base URL: " + dbURL + "\n" +
+                     "Port: " + dbPort + "\n" +
+                     "Login: " + dbUsername);
             connection = DriverManager.getConnection(
                     "jdbc:oracle:thin:@" + dbURL + ":" + dbPort + "/" + dbName,
                     dbUsername,
                     dbPassword);
         } catch (SQLException e) {
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("SQL exception occurred!", e);
         } finally {
-            LogManager.info("Connected successfully!");
+            Log.info("Connected successfully!");
         }
         return connection;
     }
 
-    public String createQueryFromTemplate(String srcTemplateFile, Map<String, String> placeholders){
-        LogManager.info("Getting query template: " + srcTemplateFile);
-        String query = FileManager.getTxtFileContent(srcTemplateFile);
-        for(Map.Entry<String, String> entry : placeholders.entrySet()){
-            query = query.replace("$" + entry.getKey(), entry.getValue());
-        }
-        LogManager.info("Query created successfully:\n" + query);
-        return query;
-    }
-
+    /**
+     * @param query - input query to execute
+     * @return Map, where key = column name, value - cell value
+     */
     public Map<String, String> rows(String query){
         Map<String, String> queryResult = new HashMap<String, String>();
         Connection currentConnection = establishConnection();
-        LogManager.info("Executing query");
+        Log.info("Executing query: ", query);
+
         try {
             Statement stmt = currentConnection.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -65,9 +65,24 @@ public class DbManager {
                     }
                 }
         } catch (SQLException e){
-            LogManager.warning(e.getLocalizedMessage());
+            Log.error("SQL exception occurred!", e);
         }
         return queryResult;
+    }
+
+    /**
+     * @param query - input query to be executed, doesn't return anything, is used for INSERT, UPDATE, DELETE queries.
+     */
+    public void executeQuery(String query){
+        Connection currentConnection = establishConnection();
+        Log.info("Executing query: ", query);
+        try{
+            currentConnection.setAutoCommit(true);
+            Statement stmt = currentConnection.createStatement();
+            stmt.executeQuery(query);
+        } catch (SQLException e){
+            Log.error("SQL exception occurred", e);
+        }
     }
 
 }

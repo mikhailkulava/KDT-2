@@ -1,16 +1,17 @@
 package com.sigmaukraine.trn.report;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.*;
-
 import com.sigmaukraine.trn.testUtils.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.custommonkey.xmlunit.XMLUnit;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class Config is used to load the test.properties file and get them inside test scenarios.
@@ -25,7 +26,7 @@ import org.custommonkey.xmlunit.XMLUnit;
  */
 public class Config {
     private static final Log log = LogFactory.getLog(Config.class);
-    public static final String PROPERTIES_FILE = "test.properties";
+    public static final String PROPERTIES_FILE = "config\\config.properties";
     private static final Pattern PARAMETERIZATION_PATTERN = Pattern.compile("\\$\\{(.*?)\\}");
     private static final Properties config = readParameterizedPropertiesFile(new File(PROPERTIES_FILE));
     

@@ -1,16 +1,19 @@
 package com.sigmaukraine.trn.playerDetails;
 
-import com.sigmaukraine.trn.playerDetails.PlayerDetails;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by mkulava on 14.02.14.
+ * This class converts player details from DB and SOAP response to one format
  */
 public class PlayerDetailsConverter {
+    /**
+     * This method converts player details from map:
+     * @param details - Map with details to be converted
+     * @return - returns PlayerDetails instance
+     */
     public static PlayerDetails convert(Map<String, String> details){
         PlayerDetails playerDetails = new PlayerDetails();
         playerDetails.setFrequentPlayerLevel(Integer.parseInt(details.get("FrequentPlayerLevel")));
@@ -39,7 +42,7 @@ public class PlayerDetailsConverter {
         playerDetails.setPreferredCommunicationChannel(Integer.parseInt(details.get("PreferredCommunicationChannel")));
         playerDetails.setIdentificationVerified(Integer.parseInt(details.get("IdentificationVerified")));
         playerDetails.setCountry(toNull(details.get("Country")));
-        playerDetails.setBirthDate(correctDateFormat(details.get("BirthDate")));
+        playerDetails.setBirthDate(correctDateFormat());
         playerDetails.setCity(toNull(details.get("City")));
         playerDetails.setTrackingCampaign(toNull(details.get("TrackingCampaign")));
         playerDetails.setPostalCode(toNull(details.get("PostalCode")));
@@ -58,18 +61,28 @@ public class PlayerDetailsConverter {
         return playerDetails;
     }
 
+    /**
+     * Converts String to boolean
+     * @param str - input String (can be 1/0 or word)
+     * @return - returns boolean
+     */
     private static boolean toBool(String str){
-        return str.equals("1") || str.equals("true") ? true : false;
+        return str.equals("1") || str.equals("true");
     }
 
+    /**
+     * @param str - input String
+     * @return - if @str equals null, returns empty String, otherwise - returns @str itself
+     */
     private static String toNull(String str){
-        return str = str == (null) ? str = "" : str;
+        return str == (null) ? "" : str;
     }
 
-    private static String correctDateFormat(String date){
+
+    private static String correctDateFormat(){
         final String OLD_FORMAT = "yyyy-mm-dd hh:mm:ss.s";
         final String NEW_FORMAT = "yyyy/MM/dd";
-        date = "1986-09-28 14:59:40.0";
+        String date = "1986-09-28 14:59:40.0";
         String newDateString = "";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(OLD_FORMAT);
         try{

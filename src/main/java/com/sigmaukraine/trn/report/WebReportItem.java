@@ -1,9 +1,7 @@
 package com.sigmaukraine.trn.report;
 
+import com.sigmaukraine.trn.testUtils.Utils;
 import org.apache.log4j.Level;
-
-import com.netcracker.automation.util.Utils;
-
 public abstract class WebReportItem {
     public static Message message(String title, Level level, String message, Throwable throwable, SourceProvider page) {
         return new Message(title, level, message, throwable, page);
@@ -33,6 +31,9 @@ public abstract class WebReportItem {
         public Message(String title, Level level, String message, Throwable throwable, SourceProvider page) {
             this.title = title;
             this.level = level;
+            if (message != null && message.contains("\n")){
+                message = message.replace("\n", "<br>");
+            }
             this.message = message;
             this.page = page;
             this.throwable = throwable;
@@ -66,6 +67,12 @@ public abstract class WebReportItem {
         private String description;
         public OpenLog(String logName, String description) {
             this.logName = logName;
+            if(description != null && description.contains("\n")){
+                description = description.replace("\n", "<br>");
+            }
+            if(description != null && description.contains("  ")){
+                description = description.replace("  ", "&emsp;&emsp;");
+            }
             this.description = description;
         }
         public String getLogName() {

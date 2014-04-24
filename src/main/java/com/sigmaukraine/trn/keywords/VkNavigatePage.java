@@ -1,10 +1,19 @@
 package com.sigmaukraine.trn.keywords;
 
+import com.sigmaukraine.trn.testUtils.TestConfig;
+import com.sigmaukraine.trn.testUtils.WebDriverManager;
+
+import java.util.Map;
+
 /**
- * Created by mkulava on 21.03.14.
+ * This keywords navigates to takeSnapshot which is stored in @param - URI
  */
 public class VkNavigatePage {
-    public static void execute(){
-
+    /**
+     * Keyword execution method
+     */
+    public static void execute(Map<String, String> parametersAndValues){
+        final String BASE_URL = TestConfig.VK_PROPERTIES.getProperty("vkBaseURL");
+        WebDriverManager.goToURL(BASE_URL + parametersAndValues.get("uri"));
     }
 }

@@ -1,2 +1,1 @@
-#Sun Mar 16 11:05:55 EET 2014
 latency_fixed=555

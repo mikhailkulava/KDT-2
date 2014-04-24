@@ -6,10 +6,18 @@ import com.sigmaukraine.trn.testUtils.SftpManager;
 import java.util.Map;
 
 /**
- * Created by mkulava on 07.03.14.
+ * This keyword performs such actions:
+ *      <ol>
+ *      <li>Download file from SFTP server to the local machine</li>
+ *      <li>Change file's properties</li>
+ *      <li>Upload file back to the remote machine</li>
+ *      </ol>
  */
 public class SimulatorConfig {
-
+    /**
+     * Keyword execution method
+     * @param parametersAndValues - stores parameters and values required
+     */
     public static void execute(Map<String, String> parametersAndValues){
         SftpManager sftpManager = new SftpManager();
         sftpManager.establishConnection();

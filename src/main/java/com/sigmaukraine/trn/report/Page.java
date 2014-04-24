@@ -1,15 +1,13 @@
 package com.sigmaukraine.trn.report;
 
-import com.sigmaukraine.trn.report.SourceProvider;
 import org.openqa.selenium.WebDriver;
 
 public class Page implements SourceProvider {
-    
     // Current browser-object
     protected WebDriver driver;
-    
+
     /**
-     * @param d
+     * @param d - webdriver instance
      */
     public Page(WebDriver d) {
         this.driver = d;       

@@ -1,11 +1,10 @@
 package com.sigmaukraine.trn.report;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.apache.log4j.Level;
 
-import com.netcracker.automation.report.SourceProvider;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Report {
     private static Report instance;
@@ -54,8 +53,7 @@ public class Report {
             }
         }
     }
-    
-    
+
     public void info(String title) {
         info(title, title, null);
     }

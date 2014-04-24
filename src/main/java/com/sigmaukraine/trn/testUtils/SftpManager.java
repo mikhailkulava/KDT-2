@@ -1,28 +1,32 @@
 package com.sigmaukraine.trn.testUtils;
 
 import com.jcraft.jsch.*;
+import com.sigmaukraine.trn.report.Log;
 
 
 /**
- * Created by mkulava on 31.01.14.
+ * This manager provides remote file actions, such as upload, download file and creating remote directories if file path, doesn't exist
  */
 public class SftpManager {
     private Session session = null;
     private Channel channel = null;
     private ChannelSftp sftpChannel = null;
 
-    //establishing connection method
+    /**
+     * Establishing connection with SFTP server, connection credentials are stored in: config/server.properties
+     */
     public void establishConnection(){
-        LogManager.info("Establishing connection with SFTP server");
         try{
             //setting connection credentials
             String host = TestConfig.SERVER_PROPERTIES.getProperty("sftpurl");
             String login = TestConfig.SERVER_PROPERTIES.getProperty("sftpuser");
             String password = TestConfig.SERVER_PROPERTIES.getProperty("sftppassword");
             int port = Integer.parseInt(TestConfig.SERVER_PROPERTIES.getProperty("sftpport"));
-            LogManager.info("Host: " + host);
-            LogManager.info("Port: " + port);
-            LogManager.info("Login: " + login);
+            Log.info("Establishing connection with SFTP server",
+                     "\nHost: " + host + "\n" +
+                     "Port: " + port + "\n" +
+                     "Login: " + login + "\n");
+
 
             JSch jsch = new JSch();
             session = jsch.getSession(login, host, port);
@@ -35,39 +39,51 @@ public class SftpManager {
             channel.connect();
             sftpChannel = (ChannelSftp)channel;
         } catch (JSchException e) {
-            LogManager.warning("Failed to establish connection!" + e.getLocalizedMessage());
+            Log.error("Failed to establish connection!", e);
         } finally {
-            LogManager.info("Connected successfully!");
+            Log.info("Connected successfully!");
         }
     }
 
-    //download file method
+    /**
+     * This method downloads file from SFTP server
+     * @param srcFile - path to the remote file to be downloaded
+     * @param destFolder - download to path
+     */
     public void downloadFile(String srcFile, String destFolder){
         DirectoryManager.createDir(destFolder);
         try{
             sftpChannel.get(srcFile, destFolder);
         } catch (SftpException e) {
-            LogManager.warning("Failed to download file!" + e.getLocalizedMessage());
+            Log.error("Failed to download file!", e);
         } finally {
-            LogManager.info("File: " + srcFile + " was downloaded to: " + destFolder);
+            Log.info("File was downloaded successfully! ", "file: " +
+                    srcFile + "was downloaded to: " + destFolder);
         }
 
     }
 
-    //upload file method
+    /**
+     * Upload file to SFTP server
+     * @param srcFile - path file at the local machine
+     * @param destFolder - destination folder path
+     */
     public void uploadFile(String srcFile, String destFolder){
         try{
             createRemoteDir(destFolder);
-            LogManager.info("uploading file: " + srcFile + " to: " + destFolder);
+            Log.info("Uploading file", "uploading file: " + srcFile + " to: " + destFolder);
             sftpChannel.put(srcFile, destFolder);
         } catch (Exception e) {
-            LogManager.warning("Failed to upload file! " + e.getLocalizedMessage());
+            Log.error("Failed to upload file! ", e);
         } finally {
-            LogManager.info("File was uploaded successfully!");
+            Log.info("File was uploaded successfully!");
         }
     }
 
-    //create remote directory if doesn't exist
+    /**
+     * This method creates remote directory if it doesn't exist
+     * @param path - remote directory path, including desired directory name
+     */
     public void createRemoteDir(String path) {
         String[] folders = path.split("/");
         if(path.startsWith("/")){
@@ -80,12 +96,12 @@ public class SftpManager {
                 }
                 catch ( SftpException e ) {
                     try{
-                        LogManager.info("Directory: \"" + folder + "\" created");
+                        Log.info("Directory: \"" + folder + "\" created");
                         sftpChannel.mkdir( folder );
                         sftpChannel.cd( folder );
                     }
                     catch (SftpException e1){
-                        LogManager.warning(e.getLocalizedMessage());
+                        Log.error("Sftp exception occurred!", e);
                     }
                 }
             }
@@ -93,23 +109,27 @@ public class SftpManager {
 
       }
 
-    //delete directory method
+    /**
+     * This method removes remote directory
+     * @param path - path to remote directory
+     */
     public void removeRemoteDir(String path){
             try{
-                LogManager.info("Removing directory: \"" + path + "\"");
+                Log.info("Removing directory", "Removing directory: \"" + path + "\"");
                 sftpChannel.rm(path + "*");
                 sftpChannel.rmdir(path);
             } catch (SftpException e){
-               LogManager.warning(e.getLocalizedMessage());
+                Log.error("Sftp exception occurred!", e);
             } finally {
-                LogManager.info("Directory removed successfully");
+                Log.info("Directory removed successfully");
             }
     }
 
     public void closeConnection(){
-        LogManager.info("Closing connection!");
+        Log.info("Closing connection");
         sftpChannel.disconnect();
         channel.disconnect();
         session.disconnect();
+        Log.info("Connection closed");
     }
 }

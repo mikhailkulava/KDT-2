@@ -5,3 +5,9 @@ Remote files;uploadFile;From;resources\KDT Scenario 1\AccountAccessorBingo_Prope
 ;;To;/boss/simulators1/
 ;uploadFile;From;resources\\KDT Scenario 1\\AccountAccessorBingo_Properties2.txt
 ;;To;/boss/simulators2/
+Player session;updatePlayerSession;srcSqlScript;templates\\sqlQueries\\UpdatePlayerSession.txt
+;;playerID;2001
+;updatePlayerSession;srcSqlScript;templates\\sqlQueries\\UpdatePlayerSession.txt
+;;playerID;2002
+;updatePlayerSession;srcSqlScript;templates\\sqlQueries\\UpdatePlayerSession.txt
+;;playerID;2003
