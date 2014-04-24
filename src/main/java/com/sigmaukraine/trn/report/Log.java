@@ -1,11 +1,10 @@
-package com.sigmaukraine.trn.testUtils;
+package com.sigmaukraine.trn.report;
 
-import com.sigmaukraine.trn.report.Report;
-import com.sigmaukraine.trn.report.SourceProvider;
-import com.sigmaukraine.trn.report.WebReportWriter;
 import com.sigmaukraine.trn.testEntities.Keyword;
 import com.sigmaukraine.trn.testEntities.TestCase;
 import com.sigmaukraine.trn.testEntities.TestSuite;
+import com.sigmaukraine.trn.testUtils.TestConfig;
+import com.sigmaukraine.trn.testUtils.Utils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
@@ -33,6 +32,8 @@ public class Log {
     private static Logger log = Logger.getLogger("logResultLogger");
     private static boolean isReportResultEnabled = Boolean.parseBoolean(TestConfig.CONFIG_PROPERTIES.getProperty("reportResult"));
     private static boolean isLogResultEnabled = Boolean.parseBoolean(TestConfig.CONFIG_PROPERTIES.getProperty("logResult"));
+    private static boolean isTestCaseOpened = false;
+    private static boolean isKeywordOpened = false;
 
     /**
      * Writes INFO message to log file, console and web report
@@ -50,8 +51,6 @@ public class Log {
      */
     public static void info(String title, String message){
         info(title, message, null);
-        log.info(title);
-        log.info(message);
     }
 
     /**
@@ -62,10 +61,7 @@ public class Log {
      */
     public static void info(String title, String message, SourceProvider page){
         report.info(currentTestStepId + ") " + title, message, page);
-        log.info(title);
-        if (message != null) {
-            log.info(message);
-        }
+        log.info(message);
         currentTestStepId++;
     }
 
@@ -86,7 +82,7 @@ public class Log {
     public static void warn(String title, String message){
         warn(title, message, null);
         log.warn(title);
-        log.warn(message);
+
     }
 
     /**
@@ -98,8 +94,7 @@ public class Log {
     public static void warn(String title, String message, SourceProvider page){
         report.warn(currentTestStepId + ") " + title, message, page);
         currentTestStepId++;
-        log.warn(title);
-        log.warn(message);
+            log.warn(message);
     }
 
     /**
@@ -120,7 +115,6 @@ public class Log {
      */
     public static void error(String title, String message){
         error(title, message, null);
-        log.error(title);
         log.error(message);
     }
 
@@ -134,9 +128,7 @@ public class Log {
     public static void error(String title, String message, SourceProvider page){
         report.error(currentTestStepId + ") " + title, message, page);
         currentTestStepId++;
-        log.error(title);
         log.error(message);
-
     }
 
     /**
@@ -192,6 +184,9 @@ public class Log {
         if(isReportResultEnabled){
             report.closeLog();
             currentTestSuiteId++;
+            if(isTestCaseOpened){
+                closeTestCase();
+            }
             currentTestCaseId = 1;
         }
     }
@@ -201,38 +196,53 @@ public class Log {
      * and creates test case section at the web report
      */
     public static void openTestCase(TestCase testCase){
+        if (isTestCaseOpened){
+            closeTestCase();
+        }
         if(isReportResultEnabled){
             currentKeywordId = 1;
             report.openSection(currentTestSuiteId + "." + currentTestCaseId + " " + testCase.getTestCaseName());
         }
         if (isLogResultEnabled){
-            testCaseFileAppender = addFileAppender(log, logsRootDir + File.separator, Utils.getCurrentTimeDate(TestConfig.CONFIG_PROPERTIES.getProperty("reportDateTimeFormat")) + "_" +
+            testCaseFileAppender = addFileAppender(log, logsRootDir + File.separator,
+                                   Utils.getCurrentTimeDate(TestConfig.CONFIG_PROPERTIES.getProperty("reportDateTimeFormat")) + "_" +
                                    testCase.getTestCaseName() + ".log");
         }
+        isTestCaseOpened = true;
+
     }
 
     /**
      * Closes test Case log and closes test case section
      * at the web report
      */
-    public static void closeTestCase(){
-       if(isReportResultEnabled){
+    private static void closeTestCase(){
+        if(isKeywordOpened){
+            closeKeyword();
+            isKeywordOpened = false;
+        }
+        if(isReportResultEnabled){
            report.closeSection();
            currentTestCaseId++;
        }
        if(isLogResultEnabled){
            removeFileAppenders(log, testCaseFileAppender);
        }
+        isTestCaseOpened = false;
     }
 
     /**
      * Opens keyword section at the web report
      */
     public static void openKeyword(Keyword keyword){
+        if(isKeywordOpened){
+            closeKeyword();
+        }
         if(isReportResultEnabled){
             report.openSection(currentTestSuiteId + "." + currentTestCaseId + "." + currentKeywordId + " " + keyword.getKeywordName());
             currentTestStepId = 1;
         }
+        isKeywordOpened = true;
     }
 
     /**
@@ -243,6 +253,7 @@ public class Log {
             report.closeSection();
             currentKeywordId++;
         }
+        isKeywordOpened = false;
     }
 
     /**
