@@ -23,7 +23,6 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="KDT" />
-        <module name="KDTAutomationFramework" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

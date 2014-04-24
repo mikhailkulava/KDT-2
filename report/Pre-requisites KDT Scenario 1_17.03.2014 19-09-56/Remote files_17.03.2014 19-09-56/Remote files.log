@@ -1,5 +1,0 @@
-[2014-03-17 19:09:56] INFO Executing test case: "REMOTE FILES"
-[2014-03-17 19:09:56] INFO 
-[2014-03-17 19:09:56] INFO EXECUTING KEYWORD: uploadFile
-[2014-03-17 19:09:56] INFO Establishing connection with SFTP server
-[2014-03-17 19:09:57] INFO Connected successfully!
