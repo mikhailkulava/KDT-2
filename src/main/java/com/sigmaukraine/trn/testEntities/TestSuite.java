@@ -1,22 +1,23 @@
 package com.sigmaukraine.trn.testEntities;
 
-import com.sigmaukraine.trn.testEntities.TestCase;
+import com.sigmaukraine.trn.report.Log;
 import com.sigmaukraine.trn.testUtils.FileManager;
-import com.sigmaukraine.trn.testUtils.LogManager;
 import com.sigmaukraine.trn.testUtils.TestConfig;
 
 import java.io.File;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
- * Created by mkulava on 04.02.14.
+ * This class parses test scenario, creates test cases and forwards content for each test case
+ * to the test case level. Also contains execution method for test suite.
  */
 public class TestSuite {
     private String scenarioName;
     private List<TestCase> testCaseList = new LinkedList<TestCase>();
     private List<String []> testSuiteContent;
-    private String scenarioReportDir;
-
 
     public TestSuite(String testScenarioName){
         scenarioName = testScenarioName;
@@ -43,37 +44,41 @@ public class TestSuite {
         }
     }
 
+    /**
+     * Test suite execution method calls Test Case execution method, for each test case in @testCaseList
+     */
     public void execute(){
-        LogManager.openTestSuite(this);
-        print();
+        Log.openTestSuite(this);
         for(TestCase testCase : testCaseList){
-            LogManager.openTestCase(testCase);
+            Log.openTestCase(testCase);
             testCase.execute();
-            LogManager.closeTestCase();
         }
-        LogManager.closeTestSuite();
-    }
-    public void print(){
-        LogManager.info("Test suite \"" + scenarioName + "\" content: ");
-        for(TestCase testCase : testCaseList){
-            LogManager.info(testCase.getTestCaseName());
-            testCase.print();
-        }
+        Log.closeTestSuite();
     }
 
+    /**
+     * Returns test scenario as string
+     */
+    public String getTestSuiteContent (){
+        String testSuiteContent = "";
+        String tabulation = "  ";
+        for (TestCase testCase : testCaseList){
+            testSuiteContent = testSuiteContent + (testCase.getTestCaseName()) + "\n";
+            for(Keyword keyword : testCase.getKeywordList()){
+                testSuiteContent = testSuiteContent + tabulation +  (keyword.getKeywordName()) + "\n";
+                for (Map.Entry<String, String> parametersAndValues : keyword.getParametersAndValues().entrySet()){
+                    testSuiteContent = testSuiteContent + tabulation + tabulation + parametersAndValues.getKey() + ":" +
+                                       tabulation + parametersAndValues.getValue() + "\n";
+                }
+            }
+        }
+        return testSuiteContent;
+    }
+
+    /**
+     * scenario name getter
+     */
     public String getScenarioName() {
         return scenarioName;
-    }
-
-    public List<TestCase> getTestCaseList() {
-        return testCaseList;
-    }
-
-    public String getScenarioReportDir() {
-        return scenarioReportDir;
-    }
-
-    public void setScenarioReportDir(String scenarioReportDir) {
-        this.scenarioReportDir = scenarioReportDir;
     }
 }

@@ -1,15 +1,10 @@
 package com.sigmaukraine.trn.testEntities;
 
-import com.sigmaukraine.trn.keywords.LocalDirRemove;
-import com.sigmaukraine.trn.keywords.PlayerInfoGet;
-import com.sigmaukraine.trn.keywords.RemoteDirRemove;
-import com.sigmaukraine.trn.keywords.UploadFile;
-import com.sigmaukraine.trn.testUtils.LogManager;
-import com.sigmaukraine.trn.keywords.SimulatorConfig;
+import com.sigmaukraine.trn.keywords.*;
+import com.sigmaukraine.trn.testUtils.WebDriverManager;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -17,57 +12,70 @@ import java.util.Map;
  */
 public class Keyword {
     private String keywordName;
-    private TestCase parentTestCase;
     private Map<String, String> parametersAndValues = new HashMap<String, String>();
 
     Keyword(List<String[]> keywordContent){
         keywordName = keywordContent.get(0)[1];
-        ListIterator<String[]> listIterator = keywordContent.listIterator();
-        while (listIterator.hasNext()){
-            String[] currentLine = listIterator.next();
-            parametersAndValues.put(currentLine[2],currentLine[3]);
+        for (String[] currentLine : keywordContent) {
+            String paramName = currentLine.length < 3 ? "" : currentLine[2];
+            String paramValue = currentLine.length < 4 ? "" : currentLine[3];
+            parametersAndValues.put(paramName, paramValue);
         }
     }
 
-    public void print(){
-        for (Map.Entry<String, String> entry : parametersAndValues.entrySet()){
-            LogManager.info("           " + entry.getKey() + " = " + entry.getValue());
-        }
-    }
-
-    //executing current keyword method
+    /**
+     * Keyword execution method. If keyword name matches condition, then keyword execution method is called.
+     */
     public void execute(){
-        //executing keyword SimulatorConfig
         if(keywordName.equals("simulator_config")){
-            LogManager.info("EXECUTING KEYWORD: " + keywordName);
             SimulatorConfig.execute(parametersAndValues);
         }
-        //executing keyword PlayerInfoGet
         else if (keywordName.equals("playerInfo_get")){
-            LogManager.info("EXECUTING KEYWORD: " + keywordName);
             PlayerInfoGet.execute(parametersAndValues);
         }
-        //executing keyword RemoteDirRemove
         else if(keywordName.equals("remoteDirRemove")){
-            LogManager.info("EXECUTING KEYWORD: " + keywordName);
             RemoteDirRemove.execute(parametersAndValues);
         }
-        //executing keyword LocalDirRemove
         else if(keywordName.equals("localDirRemove")){
-            LogManager.info("EXECUTING KEYWORD: " + keywordName);
             LocalDirRemove.execute(parametersAndValues);
         }
         else if(keywordName.equals("uploadFile")){
-            LogManager.info("EXECUTING KEYWORD: " + keywordName);
             UploadFile.execute(parametersAndValues);
+        }
+        else if (keywordName.equals("vk_login")){
+            VkLogin.execute(parametersAndValues);
+        }
+        else if (keywordName.equals("vk_navigatePage")){
+            VkNavigatePage.execute(parametersAndValues);
+        }
+        else if (keywordName.equals("vk_allPostsLike")){
+            VkAllPostsLike.execute();
+        }
+        else if (keywordName.equals("vk_allVideosLike")){
+            VkAllVideosLike.execute();
+        }
+        else if(keywordName.equals("vk_allPhotosLike")){
+            VkAllPhotosLike.execute();
+        }
+        else if (keywordName.equals("driver_close")){
+            WebDriverManager.closeWebDriver();
+        }
+        else if (keywordName.equals("updatePlayerSession")){
+            UpdatePlayerSession.execute(parametersAndValues);
         }
     }
 
+    /**
+     * @return - keyword name getter
+     */
     public String getKeywordName() {
         return keywordName;
     }
 
-    public void setParentTestCase(TestCase parentTestCase) {
-        this.parentTestCase = parentTestCase;
+     /**
+     * @return - parameters and values getter
+     */
+    public Map<String, String> getParametersAndValues() {
+        return parametersAndValues;
     }
 }
