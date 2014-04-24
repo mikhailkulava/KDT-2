@@ -1,0 +1,42 @@
+html,body {
+    margin: 0;
+    padding: 0
+}
+
+.settings {
+    width: 100%;
+    height: 17%;
+}
+
+.details {
+    width: 100%;
+    height: 83%;
+}
+
+.snapshot {
+    width: 100%;
+    height: 67%;
+}
+
+.table {
+  width: 100%;
+  height: 100%;
+  display: table;
+}
+
+.left {
+    width: 25%;
+}
+.right {
+    width: 75%;
+}
+.index {
+    height: 33%;
+}
+.report {
+    height: 100%;
+}
+/*.frame {
+    height:100%;
+    width: 100%
+}*/

@@ -1,0 +1,38 @@
+* {
+    font: 8pt verdana,sans-serif;
+    vertical-align: middle;
+}
+.trigger {
+    white-space: nowrap;
+    display: block;
+}
+.branch {
+    white-space: nowrap;
+    display: none;
+    /* margin-left: 16px;*/
+}
+.title {
+    white-space: nowrap;
+    cursor: pointer;
+}
+.title:hover {
+    text-decoration: underline;
+}
+.title_selected {
+    white-space: nowrap;
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+}
+.title_selected:hover {
+    text-decoration: underline;
+}
+.log_name {
+    font-weight: bold;
+    color: white;
+    background-color: #666;
+}
+.snapshot {
+   padding-left: 5px;
+
+}

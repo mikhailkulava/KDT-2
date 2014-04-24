@@ -1,0 +1,30 @@
+* {
+	font: 9pt verdana,sans-serif;
+    color: black;
+}
+a {
+    white-space: nowrap;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+div {
+    white-space: nowrap;
+}
+div.error {
+    background: url(level_error.gif) no-repeat;
+    padding: 0 3px 0 16px;
+}
+div.warn {
+    background: url(level_warn.gif) no-repeat;
+    padding: 0 3px 0 16px;
+}
+div.info {
+    background: url(level_info.gif) no-repeat;
+    padding: 0 3px 0 16px;
+}
+a.selected {
+    color: white;
+    background-color: blue;
+}

@@ -1,0 +1,11 @@
+<html>
+<body style="margin: 5px; padding: 0px;">
+    <form style="margin: 0px; padding: 0px;">
+        <span style="font: 12px Arial; font-weight: bold">Expand to problems:</span> <input type="checkbox" checked="checked" name="expand_problem"
+            value="show" onClick="var contextWindow = parent.window.frames['report']; if(this.checked && contextWindow.collapsAll) { contextWindow.collapsAll();contextWindow.expandProblem();} else {contextWindow.collapsAll();}">
+        <span style="font: 12px Arial; font-weight: bold">Show snapshots:</span> <input type="checkbox" checked="checked" name="snapshots"
+            value="show" onClick="var fileName=document.getElementById('filename').value; parent.showSnapshot(fileName);">
+    </form>
+	<input type="hidden" id="filename" name="filename" value="">
+</body>
+</html>
