@@ -11,7 +11,7 @@ public class Main {
 
         testScenarios.add(new TestSuite("Pre-requisites KDT Scenario 1"));
         testScenarios.add(new TestSuite("KDT Scenario 1"));
-        testScenarios.add(new TestSuite("KDT Scenario 2"));
+        //testScenarios.add(new TestSuite("KDT Scenario 2"));
 
         for (TestSuite testSuite : testScenarios){
             testSuite.execute();
