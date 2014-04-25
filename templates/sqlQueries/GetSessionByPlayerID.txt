@@ -1,0 +1,7 @@
+SELECT 
+	external_client_session_id 
+FROM  
+	player_session 
+WHERE 
+	player_id = $playerID 
+	AND ROWNUM = 1
