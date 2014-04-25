@@ -1,0 +1,12 @@
+Test Case;Keyword;Parameters;Value
+Test Case #1;vk_login;login;littlemichu@gmail.com
+;;password;test1212
+;vk_navigatePage;uri;/id248382160
+;vk_allPostsLike;;
+;vk_navigatePage;uri;/id248382160
+;vk_allVideosLike;;
+Test Case #2;vk_navigatePage;uri;/id248382160
+;vk_allPhotosLike;;
+Test Case #3;vk_navigatePage;uri;/sigmaukraine
+;vk_allPostsLike;;
+;driver_close;;
