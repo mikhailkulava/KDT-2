@@ -1,0 +1,44 @@
+MERGE INTO player_session ps USING (
+	SELECT 
+		(
+			SELECT MAX(last_activity_time) 
+			FROM   player_session 
+			WHERE  player_id = p.player_id
+		) 											max_last_activity_time,
+		1 											game_system_id,
+		gc.game_client_id 							game_client_id,
+		1 											exchange_rate_batch_id,
+		p.player_id 								player_id,
+		'$generatedPlayerSession' 					external_client_session_id
+	FROM   
+		player p 
+		JOIN game_client gc ON gc.partner_id = p.partner_id
+	WHERE  
+		player_id = $playerID 
+		AND ROWNUM = 1
+) params 
+ON  
+	(ps.player_id = params.player_id 
+	AND ps.last_activity_time = params.max_last_activity_time) 
+WHEN  MATCHED THEN 
+    UPDATE SET end_time = (CASE WHEN end_time is not null THEN null END)
+WHEN NOT MATCHED THEN 
+	INSERT (
+		player_session_id,
+		game_system_id, 
+		game_client_id, 
+		exchange_rate_batch_id,
+		player_id, 
+		external_client_session_id, 
+		start_time 
+	) 
+	VALUES (
+		player_session_seq.NEXTVAL,
+		params.game_system_id,
+		params.game_client_id,
+		params.exchange_rate_batch_id,
+		params.player_id,
+		params.external_client_session_id, 
+		SYSTIMESTAMP
+	)             
+			

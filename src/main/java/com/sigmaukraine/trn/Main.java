@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException{
         List<TestSuite> testScenarios = new LinkedList<TestSuite>();
 
         testScenarios.add(new TestSuite("Pre-requisites KDT Scenario 1"));
@@ -16,6 +16,7 @@ public class Main {
         for (TestSuite testSuite : testScenarios){
             testSuite.execute();
         }
+
     }
 }
 
